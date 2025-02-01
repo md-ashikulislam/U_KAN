@@ -14,7 +14,7 @@ import yaml
 
 from albumentations.augmentations import transforms
 from albumentations.augmentations import geometric
-
+import albumentations as A
 
 from albumentations.core.composition import Compose, OneOf
 from sklearn.model_selection import train_test_split
@@ -340,7 +340,7 @@ def main():
 
     train_transform = Compose([
         RandomRotate90(),
-        albumentations.HorizontalFlip(),
+        A.HorizontalFlip(),
         # geometric.transforms.Flip(),
         Resize(config['input_h'], config['input_w']),
         transforms.Normalize(),
