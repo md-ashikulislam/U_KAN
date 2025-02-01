@@ -15,6 +15,7 @@ import yaml
 from albumentations.augmentations import transforms
 from albumentations.augmentations import geometric
 
+
 from albumentations.core.composition import Compose, OneOf
 from sklearn.model_selection import train_test_split
 from torch.optim import lr_scheduler
@@ -339,7 +340,8 @@ def main():
 
     train_transform = Compose([
         RandomRotate90(),
-        geometric.transforms.Flip(),
+        albumentations.HorizontalFlip(),
+        # geometric.transforms.Flip(),
         Resize(config['input_h'], config['input_w']),
         transforms.Normalize(),
     ])
