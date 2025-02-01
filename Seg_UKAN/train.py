@@ -39,7 +39,9 @@ import subprocess
 from pdb import set_trace as st
 
 
-ARCH_NAMES = archs.__all__
+from archs import UKAN  # Import the required model directly
+ARCH_NAMES = ['UKAN'] 
+# ARCH_NAMES = archs.__all__
 LOSS_NAMES = losses.__all__
 LOSS_NAMES.append('BCEWithLogitsLoss')
 
