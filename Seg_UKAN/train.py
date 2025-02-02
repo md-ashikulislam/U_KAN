@@ -60,7 +60,7 @@ def parse_args():
                         help='model name: (default: arch+timestamp)')
     parser.add_argument('--epochs', default=20, type=int, metavar='N',
                         help='number of total epochs to run')
-    parser.add_argument('-b', '--batch_size', default=8, type=int,
+    parser.add_argument('-b', '--batch_size', default=32, type=int,
                         metavar='N', help='mini-batch size (default: 16)')
 
     parser.add_argument('--dataseed', default=2981, type=int,
@@ -146,8 +146,10 @@ def train(config, train_loader, model, criterion, optimizer):
 
     pbar = tqdm(total=len(train_loader))
     for input, target, _ in train_loader:
-        input = input.cuda()
-        target = target.cuda()
+        input = input.cuda(non_blocking=True)  # Move input to GPU
+        target = target.cuda(non_blocking=True)  # Move target to GPU
+        # input = input.cuda()
+        # target = target.cuda()
 
         # compute output
         if config['deep_supervision']:
@@ -189,7 +191,7 @@ def train(config, train_loader, model, criterion, optimizer):
 def validate(config, val_loader, model, criterion):
     avg_meters = {'loss': AverageMeter(),
                   'iou': AverageMeter(),
-                   'dice': AverageMeter()}
+                  'dice': AverageMeter()}
 
     # switch to evaluate mode
     model.eval()
@@ -278,7 +280,15 @@ def main():
     # create model
     model = archs.__dict__[config['arch']](config['num_classes'], config['input_channels'], config['deep_supervision'], embed_dims=config['input_list'], no_kan=config['no_kan'])
 
-    model = model.cuda()
+    #FOR 1 GPUs
+    # model = model.cuda()
+
+    #FOR 2 GPUs
+    # Move model to multiple GPUs
+    if torch.cuda.device_count() > 1:
+      print(f"Using {torch.cuda.device_count()} GPUs!")
+      model = torch.nn.DataParallel(model)
+    model = model.cuda()  # Move to CUDA
 
 
     param_groups = []

@@ -61,8 +61,7 @@ def main():
     cudnn.benchmark = True
 
     model = archs.__dict__[config['arch']](config['num_classes'], config['input_channels'], config['deep_supervision'], embed_dims=config['input_list'])
-
-    model = model.cuda()
+    # model = model.cuda()  # Move to CUDA
 
     # dataset_name = config['dataset']
     # img_ext = '.png'
