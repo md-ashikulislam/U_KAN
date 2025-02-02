@@ -303,7 +303,7 @@ def main():
 
 
     elif config['optimizer'] == 'SGD':
-        optimizer = optim.SGD(params, lr=config['lr'], momentum=config['momentum'], nesterov=config['nesterov'], weight_decay=config['weight_decay'])
+        optimizer = optim.SGD(param_groups, lr=config['lr'], momentum=config['momentum'], nesterov=config['nesterov'], weight_decay=config['weight_decay'])
     else:
         raise NotImplementedError
 
@@ -323,12 +323,18 @@ def main():
     shutil.copy2('archs.py', f'{output_dir}/{exp_name}/')
 
     dataset_name = config['dataset']
-    img_ext = '.png'
+    if dataset_name == 'teeth':
+       img_ext = '.JPG'  # Update for teeth dataset
+    else:
+       img_ext = '.png'  # Default for other datasets
+    # img_ext = '.png'
 
     if dataset_name == 'busi':
         mask_ext = '_mask.png'
     elif dataset_name == 'glas':
         mask_ext = '.png'
+    elif dataset_name == 'teeth':
+        mask_ext = '.jpg'
     elif dataset_name == 'cvc':
         mask_ext = '.png'
 
@@ -442,9 +448,12 @@ def main():
             trigger = 0
 
         # early stopping
-        if config['early_stopping'] >= 0 and trigger >= config['early_stopping']:
-            print("=> early stopping")
-            break
+        # if config['early_stopping'] >= 0 and trigger >= config['early_stopping']:
+        #     print("=> early stopping")
+        #     break
+        if config['early_stopping'] > 0 and trigger >= config['early_stopping']:
+             print("=> early stopping")
+             break
 
         torch.cuda.empty_cache()
     

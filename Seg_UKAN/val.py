@@ -64,13 +64,29 @@ def main():
 
     model = model.cuda()
 
+    # dataset_name = config['dataset']
+    # img_ext = '.png'
+
+    # if dataset_name == 'busi':
+    #     mask_ext = '_mask.png'
+    # elif dataset_name == 'glas':
+    #     mask_ext = '.png'
+    # elif dataset_name == 'cvc':
+    #     mask_ext = '.png'
+    
     dataset_name = config['dataset']
-    img_ext = '.png'
+    if dataset_name == 'teeth':
+       img_ext = '.JPG'  # Update for teeth dataset
+    else:
+       img_ext = '.png'  # Default for other datasets
+    # img_ext = '.png'
 
     if dataset_name == 'busi':
         mask_ext = '_mask.png'
     elif dataset_name == 'glas':
         mask_ext = '.png'
+    elif dataset_name == 'teeth':
+        mask_ext = '.jpg'
     elif dataset_name == 'cvc':
         mask_ext = '.png'
 
