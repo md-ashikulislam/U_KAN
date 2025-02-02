@@ -333,7 +333,7 @@ def main():
     shutil.copy2('archs.py', f'{output_dir}/{exp_name}/')
 
     dataset_name = config['dataset']
-    if dataset_name == 'Dental':
+    if dataset_name == 'Dental' or dataset_name == 'Resized_Teeth':
        img_ext = '.JPG'  # Update for teeth dataset
     else:
        img_ext = '.png'  # Default for other datasets
@@ -344,6 +344,8 @@ def main():
     elif dataset_name == 'glas':
         mask_ext = '.png'
     elif dataset_name == 'Dental':
+        mask_ext = '.jpg'
+    elif dataset_name == 'Resized_Teeth':
         mask_ext = '.jpg'
     elif dataset_name == 'cvc':
         mask_ext = '.png'
