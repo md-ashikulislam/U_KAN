@@ -149,8 +149,8 @@ def main():
             model = model.cuda()
             # compute output
             output = model(input)
-            print("Model output shape:", output.shape)   
-            print(f"Output Min: {output.min().item()}, Max: {output.max().item()}, Mean: {output.mean().item()}")
+            # print("Model output shape:", output.shape)   
+            # print(f"Output Min: {output.min().item()}, Max: {output.max().item()}, Mean: {output.mean().item()}")
 
             iou, dice, hd95_ = iou_score(output, target)
             iou_avg_meter.update(iou, input.size(0))
@@ -158,6 +158,8 @@ def main():
             hd95_avg_meter.update(hd95_, input.size(0))
 
             output = torch.sigmoid(output).cpu().numpy()
+            print(f"Post-Sigmoid Min: {output.min().item()}, Max: {output.max().item()}, Mean: {output.mean().item()}")
+
             output[output>=0.5]=1
             output[output<0.5]=0
 
