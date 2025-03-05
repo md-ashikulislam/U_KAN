@@ -356,7 +356,7 @@ def main():
     elif dataset_name == 'ph2':
         mask_ext = '.bmp'
     elif dataset_name == 'HAM':
-        mask_ext = '.png'
+        mask_ext = '_segmentation.png'
 
     # Data loading code
     img_ids = sorted(glob(os.path.join(config['data_dir'], config['dataset'], 'images', '*' + img_ext)))
