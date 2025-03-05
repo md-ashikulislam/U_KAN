@@ -136,7 +136,7 @@ def main():
         batch_size=config['batch_size'],
         shuffle=False,
         num_workers=config['num_workers'],
-        drop_last=False)
+        drop_last=True)
 
     iou_avg_meter = AverageMeter()
     dice_avg_meter = AverageMeter()
