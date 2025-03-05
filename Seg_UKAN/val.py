@@ -150,6 +150,7 @@ def main():
             # compute output
             output = model(input)
             print("Model output shape:", output.shape)   
+            print(f"Output Min: {output.min().item()}, Max: {output.max().item()}, Mean: {output.mean().item()}")
 
             iou, dice, hd95_ = iou_score(output, target)
             iou_avg_meter.update(iou, input.size(0))
