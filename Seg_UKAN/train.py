@@ -337,6 +337,8 @@ def main():
        img_ext = '.JPG'  # Update for teeth dataset
     elif dataset_name == 'ph2':
        img_ext = '.bmp'
+    elif dataset_name == 'HAM':
+       img_ext = '.jpg'
     else:
        img_ext = '.png'  # Default for other datasets
     # img_ext = '.png'
@@ -353,6 +355,8 @@ def main():
         mask_ext = '.png'
     elif dataset_name == 'ph2':
         mask_ext = '.bmp'
+    elif dataset_name == 'HAM':
+        mask_ext = '.png'
 
     # Data loading code
     img_ids = sorted(glob(os.path.join(config['data_dir'], config['dataset'], 'images', '*' + img_ext)))
