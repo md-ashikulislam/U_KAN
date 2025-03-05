@@ -63,22 +63,14 @@ def main():
     model = archs.__dict__[config['arch']](config['num_classes'], config['input_channels'], config['deep_supervision'], embed_dims=config['input_list'])
     # model = model.cuda()  # Move to CUDA
 
-    # dataset_name = config['dataset']
-    # img_ext = '.png'
-
-    # if dataset_name == 'busi':
-    #     mask_ext = '_mask.png'
-    # elif dataset_name == 'glas':
-    #     mask_ext = '.png'
-    # elif dataset_name == 'cvc':
-    #     mask_ext = '.png'
-
     dataset_name = config['dataset']
-    if dataset_name == 'Dental':
+    if dataset_name == 'Dental' or dataset_name == 'Resized_Teeth':
        img_ext = '.JPG'  # Update for teeth dataset
+    elif dataset_name == 'ph2':
+       img_ext = '.bmp'
     else:
        img_ext = '.png'  # Default for other datasets
-    # img_ext = '.png'
+
 
     if dataset_name == 'busi':
         mask_ext = '_mask.png'
@@ -86,8 +78,13 @@ def main():
         mask_ext = '.png'
     elif dataset_name == 'Dental':
         mask_ext = '.jpg'
+    elif dataset_name == 'Resized_Teeth':
+        mask_ext = '.jpg'
     elif dataset_name == 'cvc':
         mask_ext = '.png'
+    elif dataset_name == 'ph2':
+        mask_ext = '.bmp'
+
 
     # Data loading code
     img_ids = sorted(glob(os.path.join(config['data_dir'], config['dataset'], 'images', '*' + img_ext)))
