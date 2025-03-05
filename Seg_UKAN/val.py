@@ -115,7 +115,10 @@ def main():
         #     print(f"Key: {key}")
 
         model.load_state_dict(ckpt, strict=False)
-        
+
+
+    output = model(input)
+    print("Model output shape:", output.shape)    
     model.eval()
 
     val_transform = Compose([
