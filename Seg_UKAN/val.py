@@ -103,16 +103,16 @@ def main():
     try:        
         model.load_state_dict(ckpt)
     except:
-        print("Pretrained model keys:", ckpt.keys())
-        print("Current model keys:", model.state_dict().keys())
+        # print("Pretrained model keys:", ckpt.keys())
+        # print("Current model keys:", model.state_dict().keys())
 
         pretrained_dict = {k: v for k, v in ckpt.items() if k in model.state_dict()}
         current_dict = model.state_dict()
         diff_keys = set(current_dict.keys()) - set(pretrained_dict.keys())
 
-        print("Difference in model keys:")
-        for key in diff_keys:
-            print(f"Key: {key}")
+        # print("Difference in model keys:")
+        # for key in diff_keys:
+        #     print(f"Key: {key}")
 
         model.load_state_dict(ckpt, strict=False)
         
