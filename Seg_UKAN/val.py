@@ -115,10 +115,7 @@ def main():
         #     print(f"Key: {key}")
 
         model.load_state_dict(ckpt, strict=False)
-
-
-    output = model(input)
-    print("Model output shape:", output.shape)    
+ 
     model.eval()
 
     val_transform = Compose([
@@ -152,6 +149,7 @@ def main():
             model = model.cuda()
             # compute output
             output = model(input)
+            print("Model output shape:", output.shape)   
 
             iou, dice, hd95_ = iou_score(output, target)
             iou_avg_meter.update(iou, input.size(0))
