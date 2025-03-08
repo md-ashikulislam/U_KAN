@@ -290,6 +290,8 @@ def main():
       model = torch.nn.DataParallel(model)
     model = model.cuda()  # Move to CUDA
 
+    model.load_state_dict(torch.load('/kaggle/working/U_KAN/Seg_UKAN/outputs/ham_UKAN/model.pth'))
+
 
     param_groups = []
 

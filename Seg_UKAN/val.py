@@ -29,7 +29,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--name', default=None, help='model name')
-    parser.add_argument('--output_dir', default='outputs', help='ouput dir')
+    parser.add_argument('--output_dir', default='outputs', help='output dir')
             
     args = parser.parse_args()
 
@@ -158,7 +158,7 @@ def main():
             hd95_avg_meter.update(hd95_, input.size(0))
 
             output = torch.sigmoid(output).cpu().numpy()
-            print(f"Post-Sigmoid Min: {output.min().item()}, Max: {output.max().item()}, Mean: {output.mean().item()}")
+            # print(f"Post-Sigmoid Min: {output.min().item()}, Max: {output.max().item()}, Mean: {output.mean().item()}")
 
             output[output>=0.5]=1
             output[output<0.5]=0
