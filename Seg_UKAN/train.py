@@ -289,8 +289,8 @@ def main():
       print(f"Using {torch.cuda.device_count()} GPUs!")
       model = torch.nn.DataParallel(model)
     model = model.cuda()  # Move to CUDA
-
-    model.load_state_dict(torch.load('/kaggle/input/checkpoint'))
+checkpoint
+    model.load_state_dict(torch.load('/kaggle/input/checkpoint/model.pth'))
 
 
     param_groups = []
