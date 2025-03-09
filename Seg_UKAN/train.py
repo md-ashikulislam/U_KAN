@@ -231,7 +231,7 @@ def validate(config, val_loader, model, criterion):
                 ('loss', avg_meters['loss'].avg),
                 ('iou', avg_meters['iou'].avg),
                 ('dice', avg_meters['dice'].avg),
-                ('accuracy', avg_meters['accuracy'].avg)  # Add accuracy to postfix
+                ('acc', avg_meters['accuracy'].avg)  # Add accuracy to postfix
             ])
             pbar.set_postfix(postfix)
             pbar.update(1)
