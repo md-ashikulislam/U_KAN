@@ -214,20 +214,18 @@ def validate(config, val_loader, model, criterion):
                     loss += criterion(output, target)
                 loss /= len(outputs)
                 iou, dice, _ = iou_score(outputs[-1], target)
+                iou_, dice_, hd_, hd95_, recall_, specificity_, precision_, accuracy_ = indicators(outputs[-1], target)
+
             else:
                 output = model(input)
                 loss = criterion(output, target)
                 iou, dice, _ = iou_score(output, target)
+                iou_, dice_, hd_, hd95_, recall_, specificity_, precision_, accuracy_ = indicators(output, target)
 
             avg_meters['loss'].update(loss.item(), input.size(0))
             avg_meters['iou'].update(iou, input.size(0))
             avg_meters['dice'].update(dice, input.size(0))
-
-            # Calculate accuracy
-            _, predicted = torch.max(output, 1)
-            correct = (predicted == target).sum().item()
-            accuracy = correct / target.numel()  # Total number of pixels
-            avg_meters['accuracy'].update(accuracy, input.size(0))
+            avg_meters['accuracy'].update(accuracy_, input.size(0))
 
             postfix = OrderedDict([
                 ('loss', avg_meters['loss'].avg),
