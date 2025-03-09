@@ -54,4 +54,9 @@ def indicators(output, target):
     specificity_ = specificity(output_, target_)
     precision_ = precision(output_, target_)
 
-    return iou_, dice_, hd_, hd95_, recall_, specificity_, precision_
+    # Compute accuracy
+    correct = (output_ == target_).sum()
+    total = target_.size  # Total number of pixels
+    accuracy_ = correct / total
+
+    return iou_, dice_, hd_, hd95_, recall_, specificity_, precision_, accuracy_

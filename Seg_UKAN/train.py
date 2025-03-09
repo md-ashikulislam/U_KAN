@@ -140,7 +140,8 @@ def parse_args():
 
 def train(config, train_loader, model, criterion, optimizer):
     avg_meters = {'loss': AverageMeter(),
-                  'iou': AverageMeter()}
+                  'iou': AverageMeter(),
+                  'accuracy': AverageMeter()}  # Add accuracy
 
     model.train()
 
@@ -160,13 +161,13 @@ def train(config, train_loader, model, criterion, optimizer):
             loss /= len(outputs)
 
             iou, dice, _ = iou_score(outputs[-1], target)
-            iou_, dice_, hd_, hd95_, recall_, specificity_, precision_ = indicators(outputs[-1], target)
+            iou_, dice_, hd_, hd95_, recall_, specificity_, precision_, accuracy_ = indicators(outputs[-1], target)
             
         else:
             output = model(input)
             loss = criterion(output, target)
             iou, dice, _ = iou_score(output, target)
-            iou_, dice_, hd_, hd95_, recall_, specificity_, precision_ = indicators(output, target)
+            iou_, dice_, hd_, hd95_, recall_, specificity_, precision_, accuracy_ = indicators(output, target)
 
         # compute gradient and do optimizing step
         optimizer.zero_grad()
@@ -175,23 +176,26 @@ def train(config, train_loader, model, criterion, optimizer):
 
         avg_meters['loss'].update(loss.item(), input.size(0))
         avg_meters['iou'].update(iou, input.size(0))
+        avg_meters['accuracy'].update(accuracy_, input.size(0))  # Add accuracy update
 
         postfix = OrderedDict([
             ('loss', avg_meters['loss'].avg),
             ('iou', avg_meters['iou'].avg),
+            ('accuracy', avg_meters['accuracy'].avg)  # Include accuracy in logs
         ])
         pbar.set_postfix(postfix)
         pbar.update(1)
     pbar.close()
 
     return OrderedDict([('loss', avg_meters['loss'].avg),
-                        ('iou', avg_meters['iou'].avg)])
-
+                        ('iou', avg_meters['iou'].avg),
+                        ('accuracy', avg_meters['accuracy'].avg)])  # Return accuracy
 
 def validate(config, val_loader, model, criterion):
     avg_meters = {'loss': AverageMeter(),
                   'iou': AverageMeter(),
-                  'dice': AverageMeter()}
+                  'dice': AverageMeter(),
+                  'accuracy': AverageMeter()}
 
     # switch to evaluate mode
     model.eval()
@@ -219,10 +223,17 @@ def validate(config, val_loader, model, criterion):
             avg_meters['iou'].update(iou, input.size(0))
             avg_meters['dice'].update(dice, input.size(0))
 
+            # Calculate accuracy
+            _, predicted = torch.max(output, 1)
+            correct = (predicted == target).sum().item()
+            accuracy = correct / target.numel()  # Total number of pixels
+            avg_meters['accuracy'].update(accuracy, input.size(0))
+
             postfix = OrderedDict([
                 ('loss', avg_meters['loss'].avg),
                 ('iou', avg_meters['iou'].avg),
-                ('dice', avg_meters['dice'].avg)
+                ('dice', avg_meters['dice'].avg),
+                ('accuracy', avg_meters['accuracy'].avg)  # Add accuracy to postfix
             ])
             pbar.set_postfix(postfix)
             pbar.update(1)
@@ -231,7 +242,8 @@ def validate(config, val_loader, model, criterion):
 
     return OrderedDict([('loss', avg_meters['loss'].avg),
                         ('iou', avg_meters['iou'].avg),
-                        ('dice', avg_meters['dice'].avg)])
+                        ('dice', avg_meters['dice'].avg),
+                        ('accuracy', avg_meters['accuracy'].avg)])
 
 def seed_torch(seed=1029):
     random.seed(seed)
@@ -414,14 +426,17 @@ def main():
         ('lr', []),
         ('loss', []),
         ('iou', []),
+        ('accuracy', []),  # Add accuracy logging
         ('val_loss', []),
         ('val_iou', []),
         ('val_dice', []),
+        ('val_accuracy', []),  # Add val_accuracy
     ])
 
 
     best_iou = 0
     best_dice= 0
+    best_accuracy= 0
     trigger = 0
     for epoch in range(config['epochs']):
         print('Epoch [%d/%d]' % (epoch, config['epochs']))
@@ -436,35 +451,45 @@ def main():
         elif config['scheduler'] == 'ReduceLROnPlateau':
             scheduler.step(val_log['loss'])
 
-        print('loss %.4f - iou %.4f - val_loss %.4f - val_iou %.4f'
-              % (train_log['loss'], train_log['iou'], val_log['loss'], val_log['iou']))
+        # print('loss %.4f - iou %.4f - val_loss %.4f - val_iou %.4f'
+        #       % (train_log['loss'], train_log['iou'], val_log['loss'], val_log['iou']))
+        
+        print('loss %.4f - iou %.4f - accuracy %.4f - val_loss %.4f - val_iou %.4f - val_accuracy %.4f'
+              % (train_log['loss'], train_log['iou'], train_log['accuracy'], val_log['loss'], val_log['iou'], val_log['accuracy']))
 
         log['epoch'].append(epoch)
         log['lr'].append(config['lr'])
         log['loss'].append(train_log['loss'])
         log['iou'].append(train_log['iou'])
+        log['accuracy'].append(train_log['accuracy'])  # Add train accuracy
         log['val_loss'].append(val_log['loss'])
         log['val_iou'].append(val_log['iou'])
         log['val_dice'].append(val_log['dice'])
+        log['val_accuracy'].append(val_log['accuracy'])  # Add val accuracy
 
         pd.DataFrame(log).to_csv(f'{output_dir}/{exp_name}/log.csv', index=False)
 
         my_writer.add_scalar('train/loss', train_log['loss'], global_step=epoch)
         my_writer.add_scalar('train/iou', train_log['iou'], global_step=epoch)
+        my_writer.add_scalar('train/accuracy', train_log['accuracy'], global_step=epoch)  # Add accuracy
         my_writer.add_scalar('val/loss', val_log['loss'], global_step=epoch)
         my_writer.add_scalar('val/iou', val_log['iou'], global_step=epoch)
         my_writer.add_scalar('val/dice', val_log['dice'], global_step=epoch)
+        my_writer.add_scalar('val/accuracy', val_log['accuracy'], global_step=epoch)  # Add accuracy
 
         my_writer.add_scalar('val/best_iou_value', best_iou, global_step=epoch)
         my_writer.add_scalar('val/best_dice_value', best_dice, global_step=epoch)
+        my_writer.add_scalar('val/best_accuracy_value', best_accuracy, global_step=epoch)
 
         trigger += 1
 
         if val_log['iou'] > best_iou:
             torch.save(model.state_dict(), f'{output_dir}/{exp_name}/model.pth')
+            best_accuracy = val_log['accuracy']
             best_iou = val_log['iou']
             best_dice = val_log['dice']
             print("=> saved best model")
+            print('Accuracy: %.4f' % best_accuracy)
             print('IoU: %.4f' % best_iou)
             print('Dice: %.4f' % best_dice)
             trigger = 0
