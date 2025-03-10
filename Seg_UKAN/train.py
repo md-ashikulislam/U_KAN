@@ -233,12 +233,14 @@ def validate(config, val_loader, model, criterion):
             #     ('dice', avg_meters['dice'].avg),
             #     ('acc', avg_meters['accuracy'].avg)  # Add accuracy to postfix
             # ])
- 
-            # pbar.set_postfix(postfix) 
-            pbar.set_description(
-                f"Loss: {avg_meters['loss'].avg:.4f}, IoU: {avg_meters['iou'].avg:.4f}, "
-                f"Dice: {avg_meters['dice'].avg:.4f}, Acc: {avg_meters['accuracy'].avg:.4f}"
-                )
+            postfix = OrderedDict([
+                ('loss', f"{avg_meters['loss'].avg:.4f}"),
+                ('iou', f"{avg_meters['iou'].avg:.4f}"),
+                ('dice', f"{avg_meters['dice'].avg:.4f}"),
+                ('accuracy', f"{avg_meters['accuracy'].avg:.4f}".ljust(10))  # Add padding to prevent truncation
+            ])
+            pbar.set_postfix(postfix, refresh=True)  # Force update to ensure full display
+            # pbar.set_postfix(postfix)
             pbar.update(1)
         pbar.close()
 
