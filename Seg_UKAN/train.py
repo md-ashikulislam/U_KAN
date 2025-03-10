@@ -235,8 +235,8 @@ def validate(config, val_loader, model, criterion):
             # ])
             postfix_str = (
                 f"loss={avg_meters['loss'].avg:.4f}, "
-                f"iou={avg_meters['iou'].avg:.4f}, "
-                f"dice={avg_meters['dice'].avg:.4f}, "
+                # f"iou={avg_meters['iou'].avg:.4f}, "
+                # f"dice={avg_meters['dice'].avg:.4f}, "
                 f"acc={avg_meters['accuracy'].avg:.4f}"
             )
 
