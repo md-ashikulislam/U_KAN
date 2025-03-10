@@ -227,27 +227,14 @@ def validate(config, val_loader, model, criterion):
             avg_meters['dice'].update(dice, input.size(0))
             avg_meters['accuracy'].update(accuracy_, input.size(0))
 
-            # postfix = OrderedDict([
-            #     ('loss', avg_meters['loss'].avg),
-            #     ('iou', avg_meters['iou'].avg),
-            #     ('dice', avg_meters['dice'].avg),
-            #     ('acc', avg_meters['accuracy'].avg)  # Add accuracy to postfix
-            # ])
-            postfix_str = (
-                f"loss={avg_meters['loss'].avg:.4f}, "
-                # f"iou={avg_meters['iou'].avg:.4f}, "
-                # f"dice={avg_meters['dice'].avg:.4f}, "
-                f"acc={avg_meters['accuracy'].avg:.4f}"
-            )
+            postfix = OrderedDict([
+                ('l', avg_meters['loss'].avg),
+                ('i', avg_meters['iou'].avg),
+                ('dc', avg_meters['dice'].avg),
+                ('acc', avg_meters['accuracy'].avg)  # Add accuracy to postfix
+            ])
 
-            pbar.set_postfix_str(postfix_str)  # Use set_postfix_str
-            # postfix = OrderedDict([
-            #     ('loss', f'{avg_meters["loss"].avg:.4f}'),
-            #     ('iou', f'{avg_meters["iou"].avg:.4f}'),
-            #     ('dice', f'{avg_meters["dice"].avg:.4f}'),
-            #     ('acc', f'{avg_meters["accuracy"].avg:.4f}') # Format accuracy
-            # ])
-            # pbar.set_postfix(postfix)
+            pbar.set_postfix(postfix)
             pbar.update(1)
         pbar.close()
 
