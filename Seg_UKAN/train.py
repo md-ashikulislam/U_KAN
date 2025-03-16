@@ -78,7 +78,7 @@ def parse_args():
                         help='image width')
     parser.add_argument('--input_h', default=256, type=int,
                         help='image height')
-    parser.add_argument('--input_list', type=list_type, default=[128, 160, 256])
+    parser.add_argument('--input_list', type=list_type, default=[128, 160, 256, 512])
 
     # loss
     parser.add_argument('--loss', default='BCEDiceLoss',
@@ -301,7 +301,7 @@ def main():
       model = torch.nn.DataParallel(model)
     model = model.cuda()  # Move to CUDA
 
-    model.load_state_dict(torch.load('/kaggle/input/checkpoint65/model60.pth'))
+    model.load_state_dict(torch.load('/kaggle/input/checkpoint90/model90.pth'))
 
 
     param_groups = []
