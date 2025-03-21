@@ -411,9 +411,13 @@ def main():
 
     dataset_name = config['dataset']
 
-    if dataset_name == 'MRI_GG' or 'HAMprocessed':
+    if dataset_name == 'MRI_GG':
        img_ext = '.jpg'       
        mask_ext = '.png'
+
+    if dataset_name == 'HAMprocessed':
+       img_ext = '.jpg'       
+       mask_ext = '_segmentation.png'
     
     # Data loading code
     img_ids = sorted(glob(os.path.join(config['data_dir'], config['dataset'], 'images', '*' + img_ext)))
