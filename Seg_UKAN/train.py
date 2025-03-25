@@ -365,7 +365,7 @@ def main():
       model = torch.nn.DataParallel(model)
     model = model.cuda()  # Move to CUDA
 
-    model.load_state_dict(torch.load('/kaggle/input/checkpoint24/model24.pth'))
+    model.load_state_dict(torch.load('/kaggle/input/checkpoint49/model49.pth'))
 
 
     param_groups = []

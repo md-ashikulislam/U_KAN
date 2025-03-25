@@ -4,8 +4,6 @@ import torch.nn.functional as F
 
 from medpy.metric.binary import jc, dc, hd, hd95, recall, specificity, precision
 
-
-
 def iou_score(output, target):
     smooth = 1e-5
 
