@@ -55,14 +55,13 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         img_id = self.img_ids[idx]
         
-        img = cv2.imread(os.path.join(self.img_dir, img_id + self.img_ext))
-
+        # Read as BGR (H,W,C)
+        img = cv2.imread(os.path.join(self.img_dir, img_id + self.img_ext))  
+        # Convert BGR to RGB
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
         mask = []
         for i in range(self.num_classes):
-
-            # print(os.path.join(self.mask_dir, str(i),
-            #             img_id + self.mask_ext))
-
             mask.append(cv2.imread(os.path.join(self.mask_dir, str(i),
                         img_id + self.mask_ext), cv2.IMREAD_GRAYSCALE)[..., None])
         mask = np.dstack(mask)
@@ -71,9 +70,14 @@ class Dataset(torch.utils.data.Dataset):
             augmented = self.transform(image=img, mask=mask)
             img = augmented['image']
             mask = augmented['mask']
+
+        # Ensure img has channel dimension
+        if len(img.shape) == 2:  # (H, W)
+            img = img[..., None]  # (H, W, 1)
         
         img = img.astype('float32') / 255
         img = img.transpose(2, 0, 1)
+
         mask = mask.astype('float32') / 255
         mask = mask.transpose(2, 0, 1)
 
