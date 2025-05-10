@@ -1,3 +1,4 @@
+# kjebfljfblejfljwr
 import os
 import gc
 import argparse
@@ -435,7 +436,7 @@ def main():
         raise NotImplementedError
     
     # Load the checkpoint
-    checkpoint = torch.load('/kaggle/input/checkpoint100/model100.pth')
+    checkpoint = torch.load('/kaggle/input/checkpoint50/model50.pth')
 
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
