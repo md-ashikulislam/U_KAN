@@ -426,7 +426,7 @@ def main():
         scheduler = lr_scheduler.CosineAnnealingLR(
             optimizer, T_max=config['epochs'], eta_min=config['min_lr'])
     elif config['scheduler'] == 'ReduceLROnPlateau':
-        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, factor=config['factor'], patience=config['patience'], verbose=1, min_lr=config['min_lr'])
+        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, factor=config['factor'], patience=config['patience'], min_lr=config['min_lr'])
     elif config['scheduler'] == 'MultiStepLR':
         scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[int(e) for e in config['milestones'].split(',')], gamma=config['gamma'])
     elif config['scheduler'] == 'ConstantLR':
