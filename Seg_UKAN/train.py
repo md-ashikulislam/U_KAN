@@ -15,7 +15,6 @@ import torch.optim as optim
 import yaml
 import cv2
 
-from albumentations.augmentations import transforms
 from albumentations.augmentations import geometric
 import albumentations as A
 from albumentations import CLAHE
@@ -462,7 +461,7 @@ def main():
         # A.ToGray(),
         MedianBlur(blur_limit=3),  # Median filter (3x3 kernel)
         CLAHE(clip_limit=2.0, tile_grid_size=(8, 8)),  # Add CLAHE here
-        transforms.Normalize(mean=[0.5], std=[0.5]),
+        A.Normalize(mean=[0.5], std=[0.5]),
     ])
 
     val_transform = Compose([
@@ -470,7 +469,7 @@ def main():
         # A.ToGray(),
         MedianBlur(blur_limit=3),  # Median filter (3x3 kernel)
         CLAHE(clip_limit=2.0, tile_grid_size=(8, 8)),  # Add CLAHE here
-        transforms.Normalize(mean=[0.5], std=[0.5]),
+        A.Normalize(mean=[0.5], std=[0.5]),
     ])
 
     train_dataset = Dataset(
