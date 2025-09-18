@@ -17,7 +17,6 @@ from timm.layers import DropPath, to_2tuple, trunc_normal_
 import types
 import math
 from abc import ABCMeta, abstractmethod
-# from mmcv.cnn import ConvModule
 from pdb import set_trace as st
 
 from kan import KANLinear, KAN
@@ -252,7 +251,6 @@ class PatchEmbed(nn.Module):
 
         return x, H, W
 
-
 class ConvLayer(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(ConvLayer, self).__init__()
@@ -282,7 +280,6 @@ class D_ConvLayer(nn.Module):
 
     def forward(self, input):
         return self.conv(input)
-
 
 
 class UKAN(nn.Module):
